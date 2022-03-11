@@ -12,7 +12,7 @@ class Pause(pygame.sprite.Sprite):
         self.image = pygame.transform.rotozoom(self.image, 0, 2)
         self.rect = self.image.get_rect(center=(400, 200))
 
-    def draw(self, music, screen):
+    def draw(self, music, screen, score, highscore):
         # paint the screen blue
         screen.fill((94, 129, 162))
 
@@ -32,19 +32,15 @@ class Pause(pygame.sprite.Sprite):
         # stop the music
         music.stop()
 
+        # blit the screen
         screen.blit(name_surf, self.name_rect)
-
-        # empty the player gravity
-        player_gravity = 0
+        screen.blit(res_surf, self.res_rect)
 
         # Display score
         score_message = test_font.render(f'Score: {score}', False, (111, 196, 169))
-        score_rect = score_message.get_rect(center=(400, 340))
+        score_rect = score_message.get_rect(center=(100, 25))
 
-        # Display highsore
-        self.highscore_message = test_font.render(f'Highscore: {score}', False, (111, 196, 169))
-        self.highscore_rect = score_message.get_rect(center=(650, 25))
-        screen.blit(self.highscore_message, self.highscore_rect)
+
 
         # Only display score if score != 0
         if score == 0:
@@ -52,12 +48,24 @@ class Pause(pygame.sprite.Sprite):
         else:
             screen.blit(score_message, score_rect)
 
-    def highscore(self, score, highscore_old):
-        if score > int(highscore_old):
+    def highscore(self, score, highscore, screen):
+        # create text font
+        test_font = pygame.font.Font("font/Pixeltype.ttf", 50)
+        if score > int(highscore):
             with open("score.txt", mode = "w") as c:
                 c.write(str(score))
 
+        # read in the highscore
+        with open("score.txt") as s:
+            highscore = s.readline()
 
-    def update(self, music, screen, score, highscore_old):
-        self.draw(music, screen)
-        self.highscore(score, highscore_old)
+        # Display highsore
+        highscore_message = test_font.render(f'Highscore: {highscore}', False, (111, 196, 169))
+        self.highscore_rect = highscore_message.get_rect(center=(650, 25))
+        screen.blit(highscore_message, self.highscore_rect)
+        return highscore
+
+
+    def update(self, music, screen, score, highscore):
+        self.draw(music, screen, score, highscore)
+        self.highscore(score, highscore, screen)

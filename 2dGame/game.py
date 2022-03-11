@@ -11,7 +11,7 @@ from Obstacle import Obstacle
 # import pause screen
 from pause import Pause
 
-# score function
+# core function
 def display_score():
     current_time = round((pygame.time.get_ticks()- stop_time) / 1000)
     score_surface = test_font.render(f'Score:{current_time}', False, (64,64,64))
@@ -61,15 +61,12 @@ obstacle_group = pygame.sprite.Group()
 pause = pygame.sprite.GroupSingle()
 pause.add(Pause())
 
-# gravity
-player_gravity = 0
-
 # time
 stop_time = 0
 
 # read in the highscore
-with open("/Users/jannis/OneDrive/Python/score.txt") as s:
-    highscore_old = s.readline()
+with open("score.txt") as s:
+    highscore = s.readline()
 
 # set score as 0
 score = 0
@@ -123,7 +120,8 @@ while True:
         stop_time = pygame.time.get_ticks()
 
         pause.draw(screen)
-        pause.update(music, screen, score, highscore_old)
+        hihgscore = pause.update(music, screen, score, highscore)
+
 
     # update the display
     pygame.display.update()
